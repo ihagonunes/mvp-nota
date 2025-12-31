@@ -1,0 +1,17 @@
+# Ambiente Virtual
+.venv/
+venv/
+ENV/
+
+# Python Cache
+**/__pycache__/
+*.pyc
+
+# Arquivos gerados pela aplicação
+divisao_compras.xlsx
+qrcode_input/
+
+# IDEs e Sistema
+.vscode/
+.idea/
+.DS_Store
