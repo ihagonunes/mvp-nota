@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from utils.numbers import limpar_numero
-from services.excel_generator import gerar_excel
+from utils.numbersFunc import limpar_numero
+from services.gerarExcel import gerar_excel
 
 def extrair_itens_nfce(url: str) -> list[dict]:
     if not url.startswith("http"):

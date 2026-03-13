@@ -8,8 +8,8 @@ def limpar_numero(texto: str) -> float:
     # Remove R$, espaços normais e espaços especiais (\xa0)
     texto = texto.replace("R$", "").replace("\xa0", "").strip()
     
-    # Se o número usa ponto como milhar (ex: 1.200,50), removemos o ponto
-    # e trocamos a vírgula decimal por ponto.
+    # Se o número usa ponto como milhar (ex: 1.200,50), remover o ponto
+    # e trocar a vírgula decimal por ponto.
     if "," in texto:
         texto = texto.replace(".", "").replace(",", ".")
     

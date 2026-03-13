@@ -1,7 +1,6 @@
 print("🚀 app.py iniciado")
 
 import streamlit as st
-from utils.qr_reader import ler_qr_code
 from services.nfce_parser import processar_nfce
 
 
@@ -19,36 +18,23 @@ if "excel_path" not in st.session_state:
 # =============================
 # ETAPA 1 — INPUT
 # =============================
+if "url_extraida" not in st.session_state:
+    st.session_state.url_extraida = ""
+
 if st.session_state.step == "input":
     st.title("📸 Leitura da Nota Fiscal")
 
-    # Upload do QR Code
-    st.subheader("1️⃣ Envie a imagem do QR Code")
-    imagem = st.file_uploader(
-        "Foto do QR Code da nota",
-        type=["png", "jpg", "jpeg"]
-    )
-
-    url_extraida = ""
-
-    if imagem:
-        with st.spinner("Lendo QR Code..."):
-            resultado = ler_qr_code(imagem)
-
-        if resultado:
-            st.success("QR Code lido com sucesso!")
-            url_extraida = resultado
-        else:
-            st.warning("Não foi possível ler o QR Code. Você pode colar o link manualmente.")
-
-    # Campo de URL (editável)
-    st.subheader("2️⃣ Confirme o link da nota")
+    st.subheader("2️⃣ Insira o link da nota")
+    # O campo agora é vinculado ao session_state
     url = st.text_input(
         "Link da NFC-e",
-        value=url_extraida
+        key="url_input"
     )
 
+    # ... (restante do seu código de pessoas e botões)
+    
     # Pessoas
+    
     st.subheader("3️⃣ Pessoas pagantes")
     pessoas_texto = st.text_area(
         "Digite um nome por linha",

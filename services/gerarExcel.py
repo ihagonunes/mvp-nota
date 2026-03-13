@@ -19,6 +19,4 @@ def gerar_excel(itens: list[dict], pessoasStr: str) -> str:
             ws[f"D{i}"] = f'=IF(G{i}="","",LEN(G{i})-LEN(SUBSTITUTE(G{i},",",""))+1)'
             ws[f"E{i}"] = f"=B{i}*C{i}"
             ws[f"F{i}"] = f'=IF(D{i}="","",E{i}/D{i})'
-
     return caminho
-    
