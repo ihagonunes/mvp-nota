@@ -223,7 +223,7 @@ with st.expander("❓ Como obter o link da NFC-e?"):
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="footer">
-  Construído com ❤️ usando <strong>Python · Streamlit · openpyxl · BeautifulSoup</strong><br>
+  Construído usando <strong>Python · Streamlit · openpyxl · BeautifulSoup</strong><br>
   <a href="https://github.com" target="_blank">📁 GitHub</a> &nbsp;|&nbsp;
   Dados processados localmente — sua nota nunca sai do seu dispositivo.
 </div>
