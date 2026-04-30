@@ -1,19 +1,18 @@
 import requests
 from bs4 import BeautifulSoup
-from services.gerarExcel import gerar_excel
-
-print("✅ services.nfce_parser carregado")
-
 from utils.numbersFunc import limpar_numero
+
 
 def processar_nfce(
     url: str,
-    pessoas: str,
-    progress_callback=None
-) -> str:
+    pessoas: list,
+    progress_callback=None,
+) -> tuple[list[dict], float]:
     """
-    Processa NFC-e e gera Excel.
-    progress_callback: função que recebe (percentual, mensagem)
+    Processa NFC-e e retorna (itens, total_geral).
+    itens: lista de dicts com Produto, Quantidade, Valor Unitário, Subtotal.
+    total_geral: soma de todos os Subtotais.
+    progress_callback: função (percentual: int, mensagem: str) -> None
     """
 
     def progress(p, msg):
@@ -30,40 +29,34 @@ def processar_nfce(
     progress(25, "Lendo itens da nota...")
 
     itens_html = soup.select("tr[id^='Item']")
-    itens = []
-
+    itens: list[dict] = []
     total_itens = len(itens_html)
 
     for idx, item in enumerate(itens_html):
         nome = item.select_one(".txtTit").get_text(strip=True)
 
-        # Pegar o texto bruto
-        qtd_raw = item.select_one(".Rqtd").get_text(strip=True)
-        # Remover "Qtde:" ou "Qtde.:" e limpar espaços
+        qtd_raw   = item.select_one(".Rqtd").get_text(strip=True)
         qtd_limpa = qtd_raw.replace("Qtde:", "").replace("Qtde.:", "").strip()
-        qtd = limpar_numero(qtd_limpa)
+        qtd       = limpar_numero(qtd_limpa)
 
-        valor_raw = item.select_one(".RvlUnit").get_text(strip=True)
-        # Remover o prefixo do valor unitário e limpar espaços
+        valor_raw   = item.select_one(".RvlUnit").get_text(strip=True)
         valor_limpo = valor_raw.replace("Vl. Unit.:", "").replace("Vl.Unit.:", "").strip()
-        valor = limpar_numero(valor_limpo)
+        valor       = limpar_numero(valor_limpo)
 
         subtotal = round(qtd * valor, 2)
 
         itens.append({
-            "Produto": nome,
-            "Quantidade": qtd,
+            "Produto":        nome,
+            "Quantidade":     qtd,
             "Valor Unitário": valor,
-            "Subtotal": subtotal
+            "Subtotal":       subtotal,
         })
 
-        progresso = 25 + int((idx + 1) / total_itens * 50)
-        progress(progresso, f"Processando item {idx + 1}/{total_itens}")
+        progresso = 25 + int((idx + 1) / total_itens * 65)
+        progress(progresso, f"Processando item {idx + 1}/{total_itens}...")
 
-    progress(80, "Gerando planilha Excel...")
-
-    caminho = gerar_excel(itens, pessoas)
+    total_geral = round(sum(i["Subtotal"] for i in itens), 2)
 
     progress(100, "Processamento finalizado!")
 
-    return caminho
+    return itens, total_geral
