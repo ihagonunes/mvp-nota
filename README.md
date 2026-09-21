@@ -1,130 +1,92 @@
-<h1 align="center">🧾 NFC-e Suite</h1>
+# NFC-e Suite
 
-<p align="center">
-  <strong>Transforme sua nota fiscal em inteligência financeira — em segundos.</strong><br/>
-  Cole o link da NFC-e e receba planilhas Excel prontas para dividir contas, pedir reembolsos e comparar preços.
-</p>
+Transforme a sua NFC-e (Nota Fiscal de Consumidor Eletrônica) em planilhas Excel prontas para dividir contas, pedir reembolsos e comparar preços.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/Streamlit-1.32%2B-FF4B4B?logo=streamlit&logoColor=white" />
-  <img src="https://img.shields.io/badge/openpyxl-3.1%2B-217346?logo=microsoftexcel&logoColor=white" />
-  <img src="https://img.shields.io/badge/licença-MIT-green" />
-</p>
+**Status:** Concluído
 
----
+## Proposta
 
-## 💡 Proposta de Valor
+Toda NFC-e emitida no Brasil carrega um **QR Code** que abre a nota completa no navegador. A NFC-e Suite lê esse link, converte os dados da nota em planilhas prontas para uso — sem cadastro, sem upload de arquivos e sem digitação manual.
 
-A NFC-e (Nota Fiscal de Consumidor Eletrônica) é emitida em todo o Brasil e carrega um **QR Code** que abre a nota completa no browser. A NFC-e Suite lê esse link e converte os dados em planilhas prontas para uso — sem cadastro, sem upload de arquivos, sem digitar nada manualmente.
+Não há cadastro nem envio de arquivos: a aplicação busca a página pública da nota na Sefaz (a partir do link informado), faz o parsing com BeautifulSoup e gera o Excel localmente no ambiente em que está rodando.
 
-> Os dados são processados localmente. Sua nota nunca sai do seu computador.
+## Funcionalidades
 
----
+### Divisão de Compras
+Informe as pessoas que vão dividir a conta e receba uma planilha com o valor exato por participante. A aba **Resumo** consolida o total por pessoa.
 
-## 🛠️ Funcionalidades
+### Reembolso Empresarial
+Gera um arquivo de reembolso com:
+- **Aba Solicitação:** cabeçalho com dados do solicitante, tabela de itens e total;
+- **Aba Aprovação:** campos para assinatura de gestor, financeiro e diretoria.
 
-### 🛒 Divisão de Compras
-Informe quem vai rachar a conta e receba uma planilha com o valor exato de cada pessoa. A aba **Resumo** consolida o total por participante.
+### Comparação de Preços
+Compare notas de até 5 mercados lado a lado, com o menor preço destacado em verde e o maior em vermelho.
 
-**Ideal para:** repúblicas, grupos de amigos, casais, festas e churrascos.
+## Como Usar
 
-### 📋 Reembolso Empresarial
-Gere um relatório profissional de reembolso em segundos. O arquivo inclui:
-- **Aba Solicitação:** cabeçalho com dados do solicitante, tabela de itens e total
-- **Aba Aprovação:** campos para assinatura de gestor, financeiro e diretoria
+1. Peça o cupom fiscal — impresso ou digital (WhatsApp, e-mail).
+2. Escaneie o QR Code: o navegador abre a nota na Sefaz.
+3. Copie o link da barra de endereços.
+4. Cole o link na ferramenta desejada e preencha as informações complementares.
+5. Baixe o Excel gerado.
 
-**Ideal para:** analistas, consultores e qualquer profissional que precise prestar contas de despesas.
+## Estrutura do Projeto
 
-### 💰 Comparação de Preços
-Cole notas de até 5 mercados diferentes e veja um comparativo lado a lado. O menor preço fica destacado em **verde** e o maior em **vermelho**.
-
-**Ideal para:** consumidores atentos, donas de casa, gestores de estoque e quem quer saber onde o dinheiro rende mais.
-
----
-
-## ⚡ Como usar
-
-1. **Peça o cupom fiscal** — impresso ou digital (WhatsApp, e-mail)
-2. **Escaneie o QR Code** com o celular — o browser abre a nota da Sefaz
-3. **Copie o link** da barra de endereços
-4. **Cole na ferramenta** desejada na aplicação e preencha as informações
-5. **Baixe o Excel** gerado automaticamente
-
----
-
-## 🗂️ Estrutura do Projeto
-
-```
+```text
 mvp-nota/
-├── app.py                            # Landing page / Home
-├── pages/
-│   ├── 1_Divisão_de_Compras.py       # Página 1
-│   ├── 2_Reembolso_Empresarial.py    # Página 2
-│   └── 3_Comparação_de_Preços.py     # Página 3
-├── services/
-│   ├── nfce_parser.py                # Engine de leitura da NFC-e (compartilhada)
-│   ├── gerarExcel.py                 # Geração do Excel de divisão
-│   ├── gerarReembolso.py             # Geração do relatório de reembolso
-│   └── gerarComparacao.py            # Geração do comparativo de preços
-├── utils/
-│   └── numbersFunc.py                # Conversão de números pt-BR → float
-├── .streamlit/
-│   └── config.toml                   # Tema visual da aplicação
-└── requirements.txt
+  app.py                            # Landing page / Home
+  pages/
+    1_Divisão_de_Compras.py         # Divisão de compras
+    2_Reembolso_Empresarial.py      # Reembolso empresarial
+    3_Comparação_de_Preços.py       # Comparação de preços
+  services/
+    nfce_parser.py                  # Engine de leitura da NFC-e (compartilhada)
+    gerarExcel.py                   # Geração do Excel de divisão
+    gerarReembolso.py               # Geração do relatório de reembolso
+    gerarComparacao.py              # Geração do comparativo de preços
+  utils/
+    numbersFunc.py                  # Conversão de números pt-BR -> float
+  .streamlit/
+    config.toml                     # Tema visual da aplicação
+  requirements.txt
+  README.md
 ```
 
----
-
-## 🚀 Executar Localmente
+## Executar Localmente
 
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/seu-usuario/mvp-nota.git
+git clone https://github.com/ihagonunes/mvp-nota.git
 cd mvp-nota
 
-# 2. Crie e ative um ambiente virtual
 python -m venv .venv
+
 # Windows
 .venv\Scripts\activate
 # Linux / macOS
 source .venv/bin/activate
 
-# 3. Instale as dependências
 pip install -r requirements.txt
-
-# 4. Inicie a aplicação
 streamlit run app.py
 ```
 
-A aplicação estará disponível em `http://localhost:8501`.
+A aplicação fica disponível em `http://localhost:8501`.
 
----
+## Deploy no Streamlit Cloud 
 
-## ☁️ Deploy no Streamlit Cloud (gratuito)
+Acesse [NFC-e Suite](https://nfc-esuite.streamlit.app/)
 
-1. Faça fork deste repositório para sua conta do GitHub
-2. Acesse [share.streamlit.io](https://share.streamlit.io) e conecte sua conta
-3. Clique em **New app** → selecione o repositório e `app.py` como entry point
-4. Clique em **Deploy** — em menos de 2 minutos a aplicação estará online
-
-> O Streamlit Cloud oferece deploy gratuito para repositórios públicos.
-
----
-
-## 🔧 Stack Técnica
+## Stack
 
 | Tecnologia | Função |
 |---|---|
-| [Python 3.10+](https://python.org) | Linguagem principal |
-| [Streamlit](https://streamlit.io) | Framework web / UI |
-| [BeautifulSoup4](https://pypi.org/project/beautifulsoup4/) | Web scraping da NFC-e |
-| [Requests](https://pypi.org/project/requests/) | Requisições HTTP |
-| [Pandas](https://pandas.pydata.org) | Manipulação dos dados |
-| [openpyxl](https://openpyxl.readthedocs.io) | Geração e estilização do Excel |
+| Python 3.10+ | Linguagem principal |
+| Streamlit | Framework web / UI |
+| BeautifulSoup4 | Parsing do HTML da NFC-e |
+| Requests | Requisição HTTP ao link da nota |
+| Pandas | Manipulação dos dados |
+| openpyxl | Geração e estilização do Excel |
 
----
+## Licença
 
-## 📄 Licença
-
-Distribuído sob a licença MIT. Veja [LICENSE](LICENSE) para mais detalhes.
+Distribuído sob a licença MIT. Veja [LICENSE](LICENSE).
