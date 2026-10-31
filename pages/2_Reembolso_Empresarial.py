@@ -1,6 +1,7 @@
 import streamlit as st
 from services.nfce_parser import processar_nfce
 from services.gerarReembolso import gerar_excel_reembolso
+from utils.uploadNota import upload_html_nota
 from datetime import date
 
 st.set_page_config(
@@ -95,6 +96,7 @@ elif st.session_state.re_step == "processing":
             st.session_state.re_url_val,
             [],
             progress_callback=cb,
+            html=st.session_state.get("re_html_val"),
         )
         caminho = gerar_excel_reembolso(
             itens,
@@ -111,7 +113,12 @@ elif st.session_state.re_step == "processing":
         st.rerun()
     except Exception as e:
         st.error(f"❌ Erro ao processar a nota: {e}")
+        html_upload = upload_html_nota("re_html_upload")
+        if html_upload and html_upload != st.session_state.get("re_html_val"):
+            st.session_state.re_html_val = html_upload
+            st.rerun()
         if st.button("↩️ Tentar novamente"):
+            st.session_state.pop("re_html_val", None)
             st.session_state.re_step = "input"
             st.rerun()
 

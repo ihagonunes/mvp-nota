@@ -1,6 +1,7 @@
 import streamlit as st
 from services.nfce_parser import processar_nfce
 from services.gerarExcel import gerar_excel
+from utils.uploadNota import upload_html_nota
 
 st.set_page_config(
     page_title="Divisão de Compras | NFC-e Suite",
@@ -90,6 +91,7 @@ elif st.session_state.dc_step == "processing":
             st.session_state.dc_url_val,
             st.session_state.dc_pessoas_val,
             progress_callback=cb,
+            html=st.session_state.get("dc_html_val"),
         )
         caminho = gerar_excel(itens, st.session_state.dc_pessoas_val)
         st.session_state.dc_itens = itens
@@ -99,7 +101,12 @@ elif st.session_state.dc_step == "processing":
         st.rerun()
     except Exception as e:
         st.error(f"❌ Erro ao processar a nota: {e}")
+        html_upload = upload_html_nota("dc_html_upload")
+        if html_upload and html_upload != st.session_state.get("dc_html_val"):
+            st.session_state.dc_html_val = html_upload
+            st.rerun()
         if st.button("↩️ Tentar novamente"):
+            st.session_state.pop("dc_html_val", None)
             st.session_state.dc_step = "input"
             st.rerun()
 
@@ -156,6 +163,6 @@ elif st.session_state.dc_step == "result":
         )
 
     if st.button("🔁 Nova Nota", use_container_width=True):
-        for k in ["dc_step", "dc_url_val", "dc_pessoas_val", "dc_itens", "dc_total", "dc_excel"]:
+        for k in ["dc_step", "dc_url_val", "dc_html_val", "dc_pessoas_val", "dc_itens", "dc_total", "dc_excel"]:
             st.session_state.pop(k, None)
         st.rerun()

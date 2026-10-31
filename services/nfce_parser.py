@@ -7,33 +7,37 @@ def processar_nfce(
     url: str,
     pessoas: list,
     progress_callback=None,
+    html: str | None = None,
 ) -> tuple[list[dict], float]:
     """
     Processa NFC-e e retorna (itens, total_geral).
     itens: lista de dicts com Produto, Quantidade, Valor Unitário, Subtotal.
     total_geral: soma de todos os Subtotais.
     progress_callback: função (percentual: int, mensagem: str) -> None
+    html: conteúdo da página da nota salva pelo usuário; se informado, a URL não é consultada.
     """
 
     def progress(p, msg):
         if progress_callback:
             progress_callback(p, msg)
 
-    progress(5, "Conectando à nota fiscal...")
+    if html is None:
+        progress(5, "Conectando à nota fiscal...")
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        html = response.text
+    else:
+        progress(5, "Lendo arquivo da nota...")
 
-    response = requests.get(url, timeout=15)
-    response.raise_for_status()
-
-    soup = BeautifulSoup(response.text, "html.parser")
+    soup = BeautifulSoup(html, "html.parser")
 
     progress(25, "Lendo itens da nota...")
 
     itens_html = soup.select("tr[id^='Item']")
     if not itens_html:
-        if "Request Rejected" in response.text:
+        if "Request Rejected" in html:
             raise ValueError(
-                "O portal da SEFAZ rejeitou a consulta (bloqueio de acesso automático). "
-                "Tente novamente em alguns minutos ou abra o link no navegador para confirmar."
+                "O portal da SEFAZ bloqueou a consulta automática desta nota."
             )
         raise ValueError(
             "Nenhum item encontrado na nota. Verifique se o link está completo e se a nota "
