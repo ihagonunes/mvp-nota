@@ -29,6 +29,17 @@ def processar_nfce(
     progress(25, "Lendo itens da nota...")
 
     itens_html = soup.select("tr[id^='Item']")
+    if not itens_html:
+        if "Request Rejected" in response.text:
+            raise ValueError(
+                "O portal da SEFAZ rejeitou a consulta (bloqueio de acesso automático). "
+                "Tente novamente em alguns minutos ou abra o link no navegador para confirmar."
+            )
+        raise ValueError(
+            "Nenhum item encontrado na nota. Verifique se o link está completo e se a nota "
+            "já está disponível para consulta no portal da SEFAZ."
+        )
+
     itens: list[dict] = []
     total_itens = len(itens_html)
 
